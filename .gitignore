@@ -6,3 +6,4 @@
 TestResults/
 artifacts/
 .DS_Store
+/.env

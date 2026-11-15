@@ -1,0 +1,41 @@
+services:
+  db-recuerdame:
+    image: postgres:17-alpine
+    ports:
+      - "127.0.0.1:5432:5432"
+    environment:
+      POSTGRES_DB: Recuerdame
+      POSTGRES_USER: ${POSTGRES_USER:?Define POSTGRES_USER en .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Define POSTGRES_PASSWORD en .env}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    image: mcr.microsoft.com/dotnet/sdk:8.0
+    working_dir: /app
+    command:
+      ["dotnet", "run", "--project", "backend.csproj", "--no-launch-profile"]
+    ports:
+      - "127.0.0.1:5175:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://0.0.0.0:8080
+      ConnectionStrings__DefaultConnection: >-
+        Host=db-recuerdame;Port=5432;Database=Recuerdame;Username=${POSTGRES_USER};Password="${POSTGRES_PASSWORD}"
+    volumes:
+      - ./backend:/app
+      - backend_bin:/app/bin
+      - backend_obj:/app/obj
+    depends_on:
+      - db-recuerdame
+
+  frontend:
+    image: nginx:stable-alpine
+    ports:
+      - "127.0.0.1:5500:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html:ro
+volumes:
+  postgres_data:
+  backend_bin:
+  backend_obj:
