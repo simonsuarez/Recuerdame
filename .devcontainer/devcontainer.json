@@ -1,0 +1,13 @@
+{
+  "name": "Recuérdame",
+  "dockerComposeFile": ["../compose.yml", "compose.debug.yml"],
+  "service": "backend",
+  "workspaceFolder": "/app",
+  "overrideCommand": false,
+  "shutdownAction": "none",
+  "customizations": {
+    "vscode": {
+      "extensions": ["ms-dotnettools.csdevkit"]
+    }
+  }
+}
